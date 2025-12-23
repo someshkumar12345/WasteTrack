@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: Data Collection</title>
+    <style>
+        body { font-family: Arial; background-color:#f8f8f8; margin:0; padding:0; }
+        header { background-color:#2196f3; color:white; padding:20px; text-align:center; }
+        nav { background-color:#333; overflow:hidden; }
+        nav a { float:left; display:block; color:white; padding:12px 16px; text-decoration:none; }
+        nav a:hover { background-color:#575757; }
+        .container { padding:20px; max-width:600px; margin:30px auto; background:white; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        label { font-weight:bold; display:block; margin-top:15px; }
+        input, select, button { width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+        button { background-color:#2196f3; color:white; border:none; cursor:pointer; }
+        button:hover { background-color:#1976d2; }
+        #output { margin-top:20px; padding:15px; background-color:#e3f2fd; border:1px solid #2196f3; border-radius:5px; }
+        .result-item { margin-bottom:5px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Module 1: Data Collection from Smart Trash Units</h1>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="module1.html">Data Collection</a>
+    <a href="module2.html">Waste Categorization</a>
+    <a href="module3.html">Cloud Dashboard</a>
+</nav>
+
+<div class="container">
+    <h2>Collect Household Waste Data</h2>
+    <p>Enter the household ID, weight, and smart trash sensor status to collect waste data.</p>
+
+    <label for="household1">Household ID:</label>
+    <input type="text" id="household1" placeholder="Enter Household ID (e.g., H001)" required>
+
+    <label for="weight1">Waste Weight (kg):</label>
+    <input type="number" id="weight1" placeholder="Enter weight in kg" min="0" step="0.1" required>
+
+    <label for="sensor">Smart Trash Sensor Status:</label>
+    <select id="sensor" required>
+        <option value="" disabled selected>Select Status</option>
+        <option>Full</option>
+        <option>Half-Full</option>
+        <option>Empty</option>
+    </select>
+
+    <button type="button" onclick="collectData()">Collect Data</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    const collectedData = JSON.parse(localStorage.getItem('module1Data')) || [];
+
+    function collectData() {
+        const household = document.getElementById("household1").value.trim();
+        const weight = parseFloat(document.getElementById("weight1").value);
+        const sensor = document.getElementById("sensor").value;
+
+        if (!household || isNaN(weight) || weight < 0 || !sensor) {
+            alert("Please enter valid data for all fields.");
+            return;
+        }
+
+        collectedData.push({ household, weight, sensor });
+        localStorage.setItem('module1Data', JSON.stringify(collectedData));
+
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "<h3>Collected Household Data:</h3>";
+        collectedData.forEach((entry, index) => {
+            outputDiv.innerHTML += `<div class="result-item">
+                <strong>Entry ${index+1}:</strong> Household ID: ${entry.household}, Weight: ${entry.weight.toFixed(2)} kg, Sensor: ${entry.sensor}
+            </div>`;
+        });
+
+        document.getElementById("household1").value = "";
+        document.getElementById("weight1").value = "";
+        document.getElementById("sensor").value = "";
+    }
+</script>
+
+</body>
+</html>

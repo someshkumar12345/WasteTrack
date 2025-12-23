@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Cloud Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; background-color:#f8f8f8; margin:0; padding:0; }
+        header { background-color:#673ab7; color:white; padding:20px; text-align:center; }
+        nav { background-color:#333; overflow:hidden; }
+        nav a { float:left; display:block; color:white; padding:12px 16px; text-decoration:none; }
+        nav a:hover { background-color:#575757; }
+        .container { max-width:800px; margin:30px auto; background:white; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        canvas { margin-top:20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Module 3: Cloud Dashboard</h1>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="module1.html">Data Collection</a>
+    <a href="module2.html">Waste Categorization</a>
+    <a href="module3.html">Cloud Dashboard</a>
+</nav>
+
+<div class="container">
+    <h2>Waste Data Dashboard</h2>
+    <p>This dashboard shows categorized household waste data dynamically.</p>
+
+    <canvas id="wasteChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+    const wasteData = JSON.parse(localStorage.getItem('wasteData')) || [];
+
+    const totals = {'Biodegradable':0, 'Recyclable':0, 'Non-Recyclable':0};
+    wasteData.forEach(entry => {
+        totals[entry.type] += entry.weight;
+    });
+
+    const ctx = document.getElementById('wasteChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(totals),
+            datasets: [{
+                label: 'Total Waste (kg)',
+                data: Object.values(totals),
+                backgroundColor: [
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(33, 150, 243, 0.7)',
+                    'rgba(244, 67, 54, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(76, 175, 80, 1)',
+                    'rgba(33, 150, 243, 1)',
+                    'rgba(244, 67, 54, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive:true,
+            plugins: {
+                legend:{ display:true, position:'top' },
+                title:{ display:true, text:'Household Waste Categorization' }
+            },
+            scales:{ y:{ beginAtZero:true } }
+        }
+    });
+</script>
+
+</body>
+</html>

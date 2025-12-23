@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Waste Categorization</title>
+    <style>
+        body { font-family: Arial; background-color:#f8f8f8; margin:0; padding:0; }
+        header { background-color:#4caf50; color:white; padding:20px; text-align:center; }
+        nav { background-color:#333; overflow:hidden; }
+        nav a { float:left; display:block; color:white; padding:12px 16px; text-decoration:none; }
+        nav a:hover { background-color:#575757; }
+        .container { padding:20px; max-width:600px; margin:30px auto; background:white; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        label { font-weight:bold; display:block; margin-top:15px; }
+        input, select, button { width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+        button { background-color:#4caf50; color:white; border:none; cursor:pointer; }
+        button:hover { background-color:#45a049; }
+        #output { margin-top:20px; padding:15px; background-color:#e7f5e7; border:1px solid #4caf50; border-radius:5px; }
+        .result-item { margin-bottom:5px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Module 2: Waste Categorization</h1>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="module1.html">Data Collection</a>
+    <a href="module2.html">Waste Categorization</a>
+    <a href="module3.html">Cloud Dashboard</a>
+</nav>
+
+<div class="container">
+    <h2>Categorize Household Waste</h2>
+    <p>Enter household waste data and select the type to categorize it using MapReduce logic.</p>
+
+    <label for="household2">Household ID:</label>
+    <input type="text" id="household2" placeholder="Enter Household ID (e.g., H001)" required>
+
+    <label for="weight2">Waste Weight (kg):</label>
+    <input type="number" id="weight2" placeholder="Enter weight in kg" min="0" step="0.1" required>
+
+    <label for="type">Waste Type:</label>
+    <select id="type" required>
+        <option value="" disabled selected>Select Waste Type</option>
+        <option>Biodegradable</option>
+        <option>Recyclable</option>
+        <option>Non-Recyclable</option>
+    </select>
+
+    <button type="button" onclick="categorizeWaste()">Categorize Waste</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    let wasteData = JSON.parse(localStorage.getItem('wasteData')) || [];
+
+    function categorizeWaste() {
+        const household = document.getElementById("household2").value.trim();
+        const weight = parseFloat(document.getElementById("weight2").value);
+        const type = document.getElementById("type").value;
+
+        if (!household || isNaN(weight) || weight < 0 || !type) {
+            alert("Please enter valid data for all fields.");
+            return;
+        }
+
+        wasteData.push({ household, weight, type });
+        localStorage.setItem('wasteData', JSON.stringify(wasteData));
+
+        displayData();
+        document.getElementById("household2").value = "";
+        document.getElementById("weight2").value = "";
+        document.getElementById("type").value = "";
+    }
+
+    function displayData() {
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "<h3>Categorized Waste Entries:</h3>";
+        wasteData.forEach((entry,index) => {
+            outputDiv.innerHTML += `<div class="result-item">
+                <strong>Entry ${index+1}:</strong> Household ID: ${entry.household}, Weight: ${entry.weight.toFixed(2)} kg, Type: ${entry.type}
+            </div>`;
+        });
+    }
+
+    displayData();
+</script>
+
+</body>
+</html>
